@@ -28,6 +28,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install poetry
+        poetry install
     - name: Check with ruff
       run: |
         poetry run ruff check hilbert_bytes/*.py
