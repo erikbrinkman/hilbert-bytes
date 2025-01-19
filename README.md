@@ -1,5 +1,9 @@
 # Hilbert Bytes
 
+[![build](https://github.com/erikbrinkman/hilbert-bytes/actions/workflows/python-package.yml/badge.svg)](https://github.com/erikbrinkman/hilbert-bytes/actions/workflows/python-package.yml)
+[![pypi](https://img.shields.io/pypi/v/hilbert-bytes)](https://pypi.org/project/hilbert-bytes/)
+[![docs](https://img.shields.io/badge/api-docs-blue)](https://erikbrinkman.github.io/hilbert-bytes)
+
 Hilbert Bytes is a python library for converting to and from points in
 d-dimensions and their corresponding index on a hilbert curve. It's similar to
 [hilbertcurve](https://pypi.org/project/hilbertcurve/) and
