@@ -5,6 +5,7 @@ description = "A python library for converting between d-dimensional points and 
 authors = ["Erik Brinkman <erik.brinkman@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+include = ["hilbert_bytes/py.typed"]
 
 [tool.poetry.dependencies]
 python = "^3.12"
