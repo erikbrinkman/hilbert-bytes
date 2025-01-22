@@ -6,7 +6,7 @@ from numpy.typing import NDArray
 # you'll see a lot of x = x + y
 
 
-@nb.njit(nb.uint8[:, :](nb.uint8[:, :], nb.uint64))  # type: ignore
+@nb.jit(nb.uint8[:, :](nb.uint8[:, :], nb.uint64), cache=True, nogil=True)
 def _right_shift(binary: NDArray[np.uint8], k: int) -> NDArray[np.uint8]:
     nbytes = k // 8
     if nbytes > 0:
@@ -23,12 +23,12 @@ def _right_shift(binary: NDArray[np.uint8], k: int) -> NDArray[np.uint8]:
     return binary
 
 
-@nb.njit(nb.uint8[:, ::1](nb.uint8[:, :]))
+@nb.jit(nb.uint8[:, ::1](nb.uint8[:, :]), cache=True, nogil=True)
 def _gray_encode(arr: NDArray[np.uint8]) -> NDArray[np.uint8]:
     return arr ^ _right_shift(arr, 1)
 
 
-@nb.njit(nb.uint8[:, ::1](nb.uint8[:, ::1]))
+@nb.jit(nb.uint8[:, ::1](nb.uint8[:, ::1]), cache=True, nogil=True)
 def _gray_decode(gray: NDArray[np.uint8]) -> NDArray[np.uint8]:
     # Loop the log2(bits) number of times necessary, with shift and xor.
     _, nbytes = gray.shape
@@ -39,7 +39,7 @@ def _gray_decode(gray: NDArray[np.uint8]) -> NDArray[np.uint8]:
     return gray
 
 
-@nb.njit(nb.void(nb.uint8[:], nb.uint8[:]))
+@nb.jit(nb.void(nb.uint8[:], nb.uint8[:]), cache=True, nogil=True)
 def _transpose_bits(inp: NDArray[np.uint8], out: NDArray[np.uint8]) -> None:
     """tranpose the bits in one bit aray into another bit array"""
     (nbytes,) = inp.shape
@@ -55,7 +55,7 @@ def _transpose_bits(inp: NDArray[np.uint8], out: NDArray[np.uint8]) -> None:
             target %= nbytes
 
 
-@nb.njit(nb.uint8[:, ::1](nb.uint8[:, :]))
+@nb.jit(nb.uint8[:, ::1](nb.uint8[:, :]), cache=True, parallel=True, nogil=True)
 def _transpose_bits_broadcasted(inp: NDArray[np.uint8]) -> NDArray[np.uint8]:
     """the same as transpose bits, but broadcasted over the leading dimension"""
     num, nbytes = inp.shape
@@ -65,7 +65,7 @@ def _transpose_bits_broadcasted(inp: NDArray[np.uint8]) -> NDArray[np.uint8]:
     return out
 
 
-@nb.njit(nb.void(nb.uint8[:], nb.uint8[:]))
+@nb.jit(nb.void(nb.uint8[:], nb.uint8[:]), cache=True, nogil=True)
 def _inv_transpose_bits(inp: NDArray[np.uint8], out: NDArray[np.uint8]) -> None:
     (nbytes,) = inp.shape
     mask = np.uint8(128)
@@ -80,7 +80,7 @@ def _inv_transpose_bits(inp: NDArray[np.uint8], out: NDArray[np.uint8]) -> None:
             source %= nbytes
 
 
-@nb.njit(nb.uint8[:, ::1](nb.uint8[:, :]))
+@nb.jit(nb.uint8[:, ::1](nb.uint8[:, :]), cache=True, parallel=True, nogil=True)
 def _inv_transpose_bits_broadcasted(inp: NDArray[np.uint8]) -> NDArray[np.uint8]:
     """the same as transpose bits, but broadcasted over the leading dimension"""
     num, nbytes = inp.shape
@@ -90,7 +90,7 @@ def _inv_transpose_bits_broadcasted(inp: NDArray[np.uint8]) -> NDArray[np.uint8]
     return out
 
 
-@nb.njit(nb.uint8[:, ::1](nb.uint8[:, :, :]))
+@nb.jit(nb.uint8[:, ::1](nb.uint8[:, :, :]), cache=True, nogil=True)
 def encode(points: NDArray[np.uint8]) -> NDArray[np.uint8]:
     """Encode d-dimensional points into their indices on a hilbert curve.
 
@@ -162,7 +162,7 @@ def encode(points: NDArray[np.uint8]) -> NDArray[np.uint8]:
     return _gray_decode(bit_transposed.reshape((num, nbytes * ndim)))
 
 
-@nb.njit(nb.uint8[:, ::1, :](nb.uint8[:, :], nb.int64))
+@nb.jit(nb.uint8[:, ::1, :](nb.uint8[:, :], nb.int64), cache=True, nogil=True)
 def decode(indices: NDArray[np.uint8], ndim: int) -> NDArray[np.uint8]:
     """Decode dp-dimensional indices into d-dimensional points.
 
