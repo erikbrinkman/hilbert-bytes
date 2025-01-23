@@ -13,10 +13,13 @@ class Argument(Type):
 class Scalar(Argument):
     def __getitem__(self, val: slice | tuple[slice, ...]) -> Argument: ...
 
-int64: Scalar
-uint8: Scalar
 float64: Scalar
+int64: Scalar
+uint64: Scalar
+uint8: Scalar
 void: Argument
 
-def njit(sig: Type, /) -> _Decorator: ...
+def jit(
+    sig: Type, /, *, cache: bool = ..., parallel: bool = ..., nogil: bool = ...
+) -> _Decorator: ...
 def prange(start: int) -> Iterable[int]: ...
