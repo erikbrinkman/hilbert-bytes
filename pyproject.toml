@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hilbert-bytes"
-version = "0.2.0"
+version = "0.3.0"
 description = "A python library for converting between d-dimensional points and indices on a hilbert curve"
 authors = ["Erik Brinkman <erik.brinkman@gmail.com>"]
 license = "MIT"
