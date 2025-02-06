@@ -2,3 +2,4 @@ __pycache__
 .coverage
 out
 dist
+hilbert_bytes.egg-info
