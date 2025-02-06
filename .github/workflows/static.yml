@@ -38,14 +38,14 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install poetry
-          poetry install
+          python -m pip install uv
+          uv sync
       - name: Build site
-        run: poetry run sphinx-build -M html docs out
+        run: uv run sphinx-build -M html docs out
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './out/html'
+          path: "./out/html"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

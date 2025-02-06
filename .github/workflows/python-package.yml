@@ -5,13 +5,12 @@ name: build
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -19,19 +18,19 @@ jobs:
         python-version: ["3.12"]
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install poetry
-        poetry install
-    - name: Check with ruff
-      run: |
-        poetry run ruff check hilbert_bytes/*.py
-    - name: Test with pytest
-      run: |
-        poetry run pytest
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install uv
+          uv sync
+      - name: Check with ruff
+        run: |
+          uv run ruff check hilbert_bytes/*.py
+      - name: Test with pytest
+        run: |
+          uv run pytest
