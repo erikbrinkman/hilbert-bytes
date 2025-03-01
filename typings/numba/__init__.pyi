@@ -1,5 +1,5 @@
-from collections.abc import Iterable
-from typing import Callable, Protocol
+from collections.abc import Callable, Iterable
+from typing import Protocol
 
 class _Decorator(Protocol):
     def __call__[**P, R](self, func: Callable[P, R]) -> Callable[P, R]: ...

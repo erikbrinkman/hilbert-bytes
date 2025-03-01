@@ -7,7 +7,9 @@ from numpy.typing import NDArray
 
 
 @nb.jit(nb.uint8[:, :](nb.uint8[:, :], nb.uint64), cache=True, nogil=True)
-def _right_shift(binary: NDArray[np.uint8], k: int) -> NDArray[np.uint8]:
+def _right_shift(
+    binary: NDArray[np.uint8], k: int
+) -> NDArray[np.uint8]:  # pragma: no cover
     nbytes = k // 8
     if nbytes > 0:
         new_binary = np.empty_like(binary)
@@ -24,12 +26,12 @@ def _right_shift(binary: NDArray[np.uint8], k: int) -> NDArray[np.uint8]:
 
 
 @nb.jit(nb.uint8[:, ::1](nb.uint8[:, :]), cache=True, nogil=True)
-def _gray_encode(arr: NDArray[np.uint8]) -> NDArray[np.uint8]:
+def _gray_encode(arr: NDArray[np.uint8]) -> NDArray[np.uint8]:  # pragma: no cover
     return arr ^ _right_shift(arr, 1)
 
 
 @nb.jit(nb.uint8[:, ::1](nb.uint8[:, ::1]), cache=True, nogil=True)
-def _gray_decode(gray: NDArray[np.uint8]) -> NDArray[np.uint8]:
+def _gray_decode(gray: NDArray[np.uint8]) -> NDArray[np.uint8]:  # pragma: no cover
     # Loop the log2(bits) number of times necessary, with shift and xor.
     _, nbytes = gray.shape
     shift: int = (1 << np.uint64(np.log2(nbytes - 1))) * 8  # type: ignore
@@ -40,12 +42,14 @@ def _gray_decode(gray: NDArray[np.uint8]) -> NDArray[np.uint8]:
 
 
 @nb.jit(nb.void(nb.uint8[:], nb.uint8[:]), cache=True, nogil=True)
+# pragma: no cover
 def _transpose_bits(inp: NDArray[np.uint8], out: NDArray[np.uint8]) -> None:
-    """tranpose the bits in one bit aray into another bit array"""
+    """Tranpose the bits in one bit aray into another bit array."""
     (nbytes,) = inp.shape
     mask = np.uint8(128)
     target: int = 0
-    for byte in inp:
+    for ibyte in inp:
+        byte = ibyte
         for _ in range(8):
             out[target] <<= 1
             if byte & mask:
@@ -56,8 +60,9 @@ def _transpose_bits(inp: NDArray[np.uint8], out: NDArray[np.uint8]) -> None:
 
 
 @nb.jit(nb.uint8[:, ::1](nb.uint8[:, :]), cache=True, parallel=True, nogil=True)
+# pragma: no cover
 def _transpose_bits_broadcasted(inp: NDArray[np.uint8]) -> NDArray[np.uint8]:
-    """the same as transpose bits, but broadcasted over the leading dimension"""
+    """Transpose bits broadcasted over the leading dimension."""
     num, nbytes = inp.shape
     out = np.zeros((num, nbytes), "u1")
     for i in nb.prange(num):
@@ -66,6 +71,7 @@ def _transpose_bits_broadcasted(inp: NDArray[np.uint8]) -> NDArray[np.uint8]:
 
 
 @nb.jit(nb.void(nb.uint8[:], nb.uint8[:]), cache=True, nogil=True)
+# pragma: no cover
 def _inv_transpose_bits(inp: NDArray[np.uint8], out: NDArray[np.uint8]) -> None:
     (nbytes,) = inp.shape
     mask = np.uint8(128)
@@ -81,8 +87,9 @@ def _inv_transpose_bits(inp: NDArray[np.uint8], out: NDArray[np.uint8]) -> None:
 
 
 @nb.jit(nb.uint8[:, ::1](nb.uint8[:, :]), cache=True, parallel=True, nogil=True)
+# pragma: no cover
 def _inv_transpose_bits_broadcasted(inp: NDArray[np.uint8]) -> NDArray[np.uint8]:
-    """the same as transpose bits, but broadcasted over the leading dimension"""
+    """Transpose bits but broadcasted over the leading dimension."""
     num, nbytes = inp.shape
     out = np.zeros((num, nbytes), "u1")
     for i in nb.prange(num):
@@ -91,7 +98,7 @@ def _inv_transpose_bits_broadcasted(inp: NDArray[np.uint8]) -> NDArray[np.uint8]
 
 
 @nb.jit(nb.uint8[:, ::1](nb.uint8[:, :, :]), cache=True, nogil=True)
-def encode(points: NDArray[np.uint8]) -> NDArray[np.uint8]:
+def encode(points: NDArray[np.uint8]) -> NDArray[np.uint8]:  # pragma: no cover
     """Encode d-dimensional points into their indices on a hilbert curve.
 
     This function takes points in a d-dimensional space, and converts them to
@@ -163,12 +170,18 @@ def encode(points: NDArray[np.uint8]) -> NDArray[np.uint8]:
 
 
 @nb.jit(nb.uint8[:, ::1, :](nb.uint8[:, :], nb.int64), cache=True, nogil=True)
+# pragma: no cover
 def decode(indices: NDArray[np.uint8], ndim: int) -> NDArray[np.uint8]:
     """Decode dp-dimensional indices into d-dimensional points.
 
     This function takes indices on the hilbert curve, and the output dimension
     and converts them to their coresponding points. All numbers are represented
     as arbitrary precision integers in big-endian form.
+
+    `ndim` must divide the last dimension. If it doesn't this will error. You
+    may want to treat the input as a smaller number in a higher dimensional
+    space, in which case you just need to prefix with correct number of zero
+    bytes so that `ndim` does divide.
 
     Example
     -------
