@@ -1,3 +1,5 @@
+"""Test for hilbert_bytes."""
+
 import hilbert
 import numpy as np
 import pytest
@@ -6,6 +8,10 @@ import hilbert_bytes
 
 
 def test_single_dim() -> None:
+    """Test hilbert index on single dimension.
+
+    This should be a noop.
+    """
     nums = np.arange(0, 1 << 16, dtype="u2")
     byte_nums = nums[..., None].astype(">u2").view("u1")
 
@@ -21,6 +27,7 @@ def test_single_dim() -> None:
 
 
 def test_two_dims() -> None:
+    """Test hilbert bytes on two dimensions."""
     nums = np.arange(0, 1 << 16, dtype="u2")
     byte_nums = nums[..., None].astype(">u2").view("u1")
 
@@ -35,6 +42,7 @@ def test_two_dims() -> None:
 
 
 def test_three_dims() -> None:
+    """Test with three dimensions."""
     nums = np.arange(0, 1 << 24, 53, dtype="u4")
     byte_nums = nums[..., None].astype(">u4").view("u1")[:, 1:]
 
@@ -49,6 +57,7 @@ def test_three_dims() -> None:
 
 
 def test_exception() -> None:
+    """Test exception when bytes don't align."""
     nums = np.arange(0, 1 << 8, dtype="u1")[:, None]
     with pytest.raises(ValueError):
         hilbert_bytes.decode(nums, 2)

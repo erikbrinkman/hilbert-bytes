@@ -1,3 +1,5 @@
+"""Sphinx build."""
+
 import sys
 import tomllib
 from datetime import date
@@ -22,5 +24,5 @@ project = pyproject["name"]
 version = pyproject["version"]
 release = pyproject["version"]
 
-copyright = f"{date.today().year:d} Erik Brinkman"
+copyright = f"{date.today().year:d} Erik Brinkman"  # noqa: A001
 author = "Erik Brinkman"

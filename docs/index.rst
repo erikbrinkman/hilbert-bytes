@@ -1,8 +1,8 @@
-.. include:: ../README.md
-    :parser: myst_parser.sphinx_
+hilbert-bytes project
+=====================
 
-Methods
--------
+hilbert_bytes module
+--------------------
 
 .. automodule:: hilbert_bytes
    :members:
