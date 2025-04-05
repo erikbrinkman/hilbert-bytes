@@ -32,7 +32,7 @@ jobs:
         run: uv run ruff format --check
       - name: Check with ruff
         run: uv run ruff check
-      - name: Check with mypy
-        run: uv run mypy hilbert_bytes
+      - name: Check with pyright
+        run: uv run pyright
       - name: Test with pytest
         run: uv run pytest
