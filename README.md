@@ -41,7 +41,6 @@ indices = index_bytes.view(">u8").astype("u8")[..., 0]
 
 But note that this will only work if your index fits in 8 bytes
 
-
 ## Publishing
 
 ```sh
