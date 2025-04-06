@@ -1,6 +1,6 @@
 [project]
 name = "hilbert-bytes"
-version = "0.5.0"
+version = "0.6.0"
 description = "A python library for converting between d-dimensional points and indices on a hilbert curve"
 readme = "README.md"
 requires-python = ">=3.12"
